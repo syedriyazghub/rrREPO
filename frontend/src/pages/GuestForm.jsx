@@ -1,0 +1,175 @@
+import { useState } from 'react';
+import axios from 'axios';
+
+const EVENTS = [
+  { id: 'Shukrana & Nikah', name: 'Shukrana & Nikah', icon: '🕌' },
+  { id: 'Valima', name: 'Valima', icon: '🌹' },
+];
+const HOSTS = ['Riyaz', 'Vaseem', 'Ruksana'];
+const EVENT_DATES = {
+  'Shukrana & Nikah': [
+    { value: '2025-04-29', label: 'April 29', sub: 'Tuesday' },
+    { value: '2025-04-30', label: 'April 30', sub: 'Wednesday' },
+  ],
+  'Valima': [
+    { value: '2025-05-02', label: 'May 2', sub: 'Friday' },
+  ],
+};
+
+export default function GuestForm() {
+  const [form, setForm] = useState({ name: '', event: '', invitedBy: '', arrivalDate: '', arrivalTime: '' });
+  const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const validate = () => {
+    const e = {};
+    if (!form.name.trim()) e.name = 'Full name is required.';
+    if (!form.event) e.event = 'Please select an event.';
+    if (!form.invitedBy) e.invitedBy = 'Please select who invited you.';
+    if (!form.arrivalDate) e.arrivalDate = 'Arrival date is required.';
+    return e;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    setErrors({});
+    setApiError('');
+    setLoading(true);
+    try {
+      const arrivalTime = `${form.arrivalDate} ${form.arrivalTime}`;
+      await axios.post('/api/guests', { ...form, arrivalTime });
+      setSubmitted(true);
+    } catch (err) {
+      setApiError(err.response?.data?.error || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const reset = () => {
+    setForm({ name: '', event: '', invitedBy: '', arrivalDate: '', arrivalTime: '' });
+    setSubmitted(false);
+    setApiError('');
+  };
+
+  if (submitted) {
+    return (
+      <div className="container">
+        <div className="ty-wrapper">
+          <div className="ty-flowers">🌸 🌺 🌸</div>
+          <div className="ty-ring">💍</div>
+          <h2 className="ty-title">JazakAllah Khair!</h2>
+          <p className="ty-sub">We are overjoyed to have you celebrate with us</p>
+          <div className="ty-divider">❧</div>
+          <p className="ty-detail">
+            Assalamu Alaikum <strong>{form.name}</strong>,<br /><br />
+            Your attendance for <strong>{form.event}</strong> has been confirmed.
+            We will arrange your stay and reach out with further details soon.
+          </p>
+          <p className="ty-dua">May Allah bless this union with love, mercy, and happiness. 🤲</p>
+          <div className="ty-flowers" style={{ marginTop: 8 }}>🌹 🌷 🌹</div>
+          <button className="btn btn-primary" style={{ marginTop: 24 }} onClick={reset}>Submit Another Response</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container">
+      <div className="page">
+
+        {/* Floral banner */}
+        <div className="floral-banner">
+          <div className="floral-row"></div>
+          <div className="floral-title">You're Invited</div>
+          <div className="floral-sub">Please fill in the form so we can arrange your stay</div>
+          <div className="floral-row"></div>
+        </div>
+
+        <div className="card">
+          {apiError && <div className="alert alert-error">{apiError}</div>}
+
+          <form onSubmit={handleSubmit} noValidate>
+
+            {/* Event Selection */}
+            <div className="form-group">
+              <label className="form-label">Select Event <span>*</span></label>
+              <div className="event-grid">
+                {EVENTS.map(ev => (
+                  <div
+                    key={ev.id}
+                    className={`event-card ${form.event === ev.id ? 'selected' : ''}`}
+                    onClick={() => { setForm(f => ({ ...f, event: ev.id, arrivalDate: '' })); setErrors(e => ({ ...e, event: '', arrivalDate: '' })); }}
+                  >
+                    <div className="event-card-icon">{ev.icon}</div>
+                    <div className="event-card-name">{ev.name}</div>
+                  </div>
+                ))}
+              </div>
+              {errors.event && <p className="field-error">{errors.event}</p>}
+            </div>
+
+            {/* Full Name */}
+            <div className="form-group">
+              <label className="form-label">🌿 Full Name <span>*</span></label>
+              <input
+                type="text"
+                className={`form-control ${errors.name ? 'error' : ''}`}
+                placeholder="Enter your full name"
+                value={form.name}
+                onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: '' })); }}
+              />
+              {errors.name && <p className="field-error">{errors.name}</p>}
+            </div>
+
+            {/* Arrival Date */}
+            {form.event && (
+              <div className="form-group">
+                <label className="form-label">🗓 Arrival Date <span>*</span></label>
+                <div className="date-grid">
+                  {(EVENT_DATES[form.event] || []).map(d => (
+                    <div
+                      key={d.value}
+                      className={`date-card ${form.arrivalDate === d.value ? 'selected' : ''}`}
+                      onClick={() => { setForm(f => ({ ...f, arrivalDate: d.value })); setErrors(er => ({ ...er, arrivalDate: '' })); }}
+                    >
+                      <div className="date-card-label">{d.label}</div>
+                      <div className="date-card-sub">{d.sub}</div>
+                    </div>
+                  ))}
+                </div>
+                {errors.arrivalDate && <p className="field-error">{errors.arrivalDate}</p>}
+              </div>
+            )}
+
+            {/* Invited By */}
+            <div className="form-group">
+              <label className="form-label">🌺 Invited By <span>*</span></label>
+              <div className="invited-grid">
+                {HOSTS.map(host => (
+                  <button
+                    key={host}
+                    type="button"
+                    className={`invited-btn ${form.invitedBy === host ? 'selected' : ''}`}
+                    onClick={() => { setForm(f => ({ ...f, invitedBy: host })); setErrors(e => ({ ...e, invitedBy: '' })); }}
+                  >
+                    {host}
+                  </button>
+                ))}
+              </div>
+              {errors.invitedBy && <p className="field-error">{errors.invitedBy}</p>}
+            </div>
+
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? <><span className="spinner" /> Submitting...</> : 'Confirm Attendance'}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
