@@ -9,6 +9,10 @@ if (import.meta.env.VITE_API_URL) {
   axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 }
 
+// Keep Render backend alive by pinging every 14 minutes
+const apiBase = import.meta.env.VITE_API_URL || '';
+setInterval(() => fetch(`${apiBase}/api/config`).catch(() => {}), 14 * 60 * 1000);
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <App />
