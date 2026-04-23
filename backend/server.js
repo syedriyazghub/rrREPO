@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/guests', rateLimit({ windowMs: 15 * 60 * 1000, max: 30, message: { error: 'Too many requests, please try again later.' } }));
+app.use('/api/guests', rateLimit({ windowMs: 15 * 60 * 1000, max: 200, message: { error: 'Too many requests, please try again later.' } }));
 app.use('/api/guests', require('./routes/guests'));
 
 // Build PIN map: { pin: [name1, name2, ...] }
