@@ -68,7 +68,8 @@ export default function GuestForm() {
           <p className="ty-detail">
             Assalamu Alaikum <strong>{form.name}</strong>,<br /><br />
             Your attendance for <strong>{form.event}</strong> has been confirmed.
-            We will arrange your stay and reach out with further details soon.
+            {form.arrivalTime && <> We are expecting you on <strong>{form.arrivalDate}</strong> at <strong>{form.arrivalTime}</strong>.</>}
+            {' '}We will arrange your stay and reach out with further details soon.
           </p>
           <p className="ty-dua">May Allah bless this union with love, mercy, and happiness. 🤲</p>
           <div className="ty-flowers" style={{ marginTop: 8 }}>🌹 🌷 🌹</div>
@@ -143,6 +144,19 @@ export default function GuestForm() {
                   ))}
                 </div>
                 {errors.arrivalDate && <p className="field-error">{errors.arrivalDate}</p>}
+              </div>
+            )}
+
+            {/* Arrival Time */}
+            {form.arrivalDate && (
+              <div className="form-group">
+                <label className="form-label">🕐 Arrival Time <span style={{ color: 'var(--muted)', fontWeight: 400 }}>(optional)</span></label>
+                <input
+                  type="time"
+                  className="form-control"
+                  value={form.arrivalTime}
+                  onChange={e => setForm(f => ({ ...f, arrivalTime: e.target.value }))}
+                />
               </div>
             )}
 
