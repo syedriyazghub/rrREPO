@@ -8,11 +8,11 @@ const EVENTS = [
 const HOSTS = ['Riyaz', 'Vaseem', 'Ruksana'];
 const EVENT_DATES = {
   'Shukrana & Nikah': [
-    { value: '2025-04-29', label: 'April 29', sub: 'Tuesday' },
-    { value: '2025-04-30', label: 'April 30', sub: 'Wednesday' },
+    { value: '2026-04-29', label: 'April 29', sub: 'Wednesday' },
+    { value: '2026-04-30', label: 'April 30', sub: 'Thursday' },
   ],
   'Valima': [
-    { value: '2025-05-02', label: 'May 2', sub: 'Friday' },
+    { value: '2026-05-02', label: 'May 2', sub: 'Saturday' },
   ],
 };
 
