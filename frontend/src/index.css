@@ -319,3 +319,29 @@ body {
   width: 100%;
   line-height: 1.6;
 }
+
+/* Contact block on thank you screen */
+.ty-contact {
+  width: 100%;
+  background: white;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  padding: 16px 20px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+.ty-contact-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.ty-contact-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+.ty-contact-number:hover { color: var(--primary); }

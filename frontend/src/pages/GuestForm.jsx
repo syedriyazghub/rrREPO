@@ -16,6 +16,8 @@ const EVENT_DATES = {
   ],
 };
 
+const CONTACT = { Riyaz: '9581739450', Vaseem: '9010909256', Ruksana: '9010909256' };
+
 export default function GuestForm() {
   const [form, setForm] = useState({ name: '', event: '', invitedBy: '', arrivalDate: '', arrivalTime: '' });
   const [errors, setErrors] = useState({});
@@ -29,6 +31,7 @@ export default function GuestForm() {
     if (!form.event) e.event = 'Please select an event.';
     if (!form.invitedBy) e.invitedBy = 'Please select who invited you.';
     if (!form.arrivalDate) e.arrivalDate = 'Arrival date is required.';
+    if (!form.arrivalTime) e.arrivalTime = 'Arrival time is required.';
     return e;
   };
 
@@ -66,11 +69,17 @@ export default function GuestForm() {
           <p className="ty-sub">We are overjoyed to have you celebrate with us</p>
           <div className="ty-divider">❧</div>
           <p className="ty-detail">
-            Assalamu Alaikum <strong>{form.name}</strong>,<br /><br />
+            Hi <strong>{form.name}</strong>! Assalamu Alaikum 👋<br /><br />
             Your attendance for <strong>{form.event}</strong> has been confirmed.
             {form.arrivalTime && <> We are expecting you on <strong>{form.arrivalDate}</strong> at <strong>{form.arrivalTime}</strong>.</>}
             {' '}We will arrange your stay and reach out with further details soon.
           </p>
+          <div className="ty-contact">
+            <div className="ty-contact-label">For any queries, contact {form.invitedBy}</div>
+            <a href={`tel:${CONTACT[form.invitedBy]}`} className="ty-contact-number">
+              📞 {CONTACT[form.invitedBy]}
+            </a>
+          </div>
           <p className="ty-dua">May Allah bless this union with love, mercy, and happiness. 🤲</p>
           <div className="ty-flowers" style={{ marginTop: 8 }}>🌹 🌷 🌹</div>
           <button className="btn btn-primary" style={{ marginTop: 24 }} onClick={reset}>Submit Another Response</button>
@@ -150,13 +159,14 @@ export default function GuestForm() {
             {/* Arrival Time */}
             {form.arrivalDate && (
               <div className="form-group">
-                <label className="form-label">🕐 Arrival Time <span style={{ color: 'var(--muted)', fontWeight: 400 }}>(optional)</span></label>
+                <label className="form-label">🕐 Arrival Time <span>*</span></label>
                 <input
                   type="time"
                   className="form-control"
                   value={form.arrivalTime}
                   onChange={e => setForm(f => ({ ...f, arrivalTime: e.target.value }))}
                 />
+                {errors.arrivalTime && <p className="field-error">{errors.arrivalTime}</p>}
               </div>
             )}
 
