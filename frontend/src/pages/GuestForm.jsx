@@ -18,6 +18,12 @@ const EVENT_DATES = {
 
 const CONTACT = { Riyaz: '9581739450', Vaseem: '9010909256', Ruksana: '9010909256' };
 
+function getWhatsAppLink(invitedBy, guestName, event, arrivalDate, arrivalTime) {
+  const number = '91' + CONTACT[invitedBy];
+  const msg = `Assalamu Alaikum ${invitedBy} Bhai! 🌸\n\nThis is ${guestName}. I have confirmed my attendance for *${event}* on *${arrivalDate}* at *${arrivalTime}*.\n\nPlease arrange my stay. JazakAllah Khair! 🤲`;
+  return `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
+}
+
 export default function GuestForm() {
   const [form, setForm] = useState({ name: '', event: '', invitedBy: '', arrivalDate: '', arrivalTime: '' });
   const [errors, setErrors] = useState({});
@@ -59,9 +65,31 @@ export default function GuestForm() {
     setApiError('');
   };
 
+  const [showPopup, setShowPopup] = useState(false);
+
   if (submitted) {
+    const waLink = getWhatsAppLink(form.invitedBy, form.name, form.event, form.arrivalDate, form.arrivalTime);
     return (
       <div className="container">
+        {showPopup && (
+          <div className="modal-overlay" onClick={() => setShowPopup(false)}>
+            <div className="modal" onClick={e => e.stopPropagation()}>
+              <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                <div style={{ fontSize: '2.5rem' }}>📱</div>
+                <h2 style={{ marginTop: 8 }}>Save This Number</h2>
+                <p>Save {form.invitedBy}'s number so we can reach you with stay details.</p>
+              </div>
+              <div style={{ background: 'var(--primary-light)', borderRadius: 10, padding: '12px 16px', textAlign: 'center', marginBottom: 20 }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 600 }}>{form.invitedBy}</div>
+                <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary-dark)', letterSpacing: 1 }}>{CONTACT[form.invitedBy]}</div>
+              </div>
+              <a href={waLink} target="_blank" rel="noreferrer" className="btn btn-primary" style={{ background: '#25D366', marginBottom: 10, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                <span style={{ fontSize: '1.2rem' }}>💬</span> Send WhatsApp Message
+              </a>
+              <button className="btn btn-outline" style={{ width: '100%' }} onClick={() => setShowPopup(false)}>Close</button>
+            </div>
+          </div>
+        )}
         <div className="ty-wrapper">
           <div className="ty-flowers">🌸 🌺 🌸</div>
           <div className="ty-ring">💍</div>
@@ -74,15 +102,22 @@ export default function GuestForm() {
             {form.arrivalTime && <> We are expecting you on <strong>{form.arrivalDate}</strong> at <strong>{form.arrivalTime}</strong>.</>}
             {' '}We will arrange your stay and reach out with further details soon.
           </p>
-          <div className="ty-contact">
-            <div className="ty-contact-label">For any queries, contact {form.invitedBy}</div>
-            <a href={`tel:${CONTACT[form.invitedBy]}`} className="ty-contact-number">
-              📞 {CONTACT[form.invitedBy]}
-            </a>
+          <div className="ty-contact" onClick={() => setShowPopup(true)} style={{ cursor: 'pointer' }}>
+            <div className="ty-contact-label">For any queries, contact {form.invitedBy} 👇 Tap to save &amp; WhatsApp</div>
+            <div className="ty-contact-number">📞 {CONTACT[form.invitedBy]}</div>
           </div>
           <p className="ty-dua">May Allah bless this union with love, mercy, and happiness. 🤲</p>
           <div className="ty-flowers" style={{ marginTop: 8 }}>🌹 🌷 🌹</div>
-          <button className="btn btn-primary" style={{ marginTop: 24 }} onClick={reset}>Submit Another Response</button>
+          <a
+            href="https://thisisvaseem-stack.github.io/wedding-map/"
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-primary"
+            style={{ marginTop: 24, textDecoration: 'none', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          >
+            📍 View Event Locations
+          </a>
+          <button className="btn btn-outline" style={{ marginTop: 12, width: '100%' }} onClick={reset}>Submit Another Response</button>
         </div>
       </div>
     );
